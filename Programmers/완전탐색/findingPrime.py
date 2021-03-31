@@ -28,11 +28,4 @@ def solution(numbers):
     return len(set(primes))
 
 
-a = ('1', '2', '3')
-b = ''.join(a)
-#print(type(b))
-#print(b)
-#print(type(invert(a)))
-#print(invert(a))
 print(solution("011"))
-# print(list(permutations(a)))
