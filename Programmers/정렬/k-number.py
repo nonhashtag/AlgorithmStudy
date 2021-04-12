@@ -1,4 +1,4 @@
-#k번째 수 
+#k번째 수 구하기
 def solution(array, commands):
     answer = []
     for i in commands:
