@@ -5,17 +5,10 @@
 def solution(people, limit):
     answer = 0
     people.sort(reverse=True)
-    boat=[]
-    idx=0
     while len(people)>0:
-        boat.append([people.pop(0)])
-        other = [people.index(man) for man in people if man+boat[idx][0]<=limit]
-        if len(other)>0:
-            boat[idx].append(people.pop(other[0]))
-        if len(people)==0:
-            break
-        idx+=1
-    answer = len(boat)
-        
+        load = people.pop(0)
+        waiting = [i for i in people if load+i<=limit]
+        if any(waiting):
+            del people[people.index(waiting[0])]
+        answer+=1
     return answer
-
