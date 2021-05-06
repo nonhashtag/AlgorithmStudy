@@ -1,3 +1,4 @@
+#프림 알고리즘(신장트리)을 이용하여 섬 다리 연결하기
 def prim(edge: list, node: list, start: int):
     selected=[]
     V = [start]
