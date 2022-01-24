@@ -6,6 +6,7 @@
 ## 2. fordata~.py 파일은 데이터 전처리 후, 전처리된 데이터를 저장하는 코드이다.
 ### - fordata1.py, fordata1_2.py, fordata2_2.py 로 나뉜다.
 ### - 그 결과 data1.csv, data2.csv, data2_2.csv 를 생성한다
+#
 
 ## 3. linear.py 는 선형회귀분석
 #
