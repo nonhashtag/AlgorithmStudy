@@ -1,4 +1,6 @@
 #query 순서 언어 and 직무 and 경력 and 음식 점수
+#Programeers/lv2/순위검색(kakao2021).py 참조
+
 def onTheHash(dictionary, words):
     node = dictionary
     for w in words:
