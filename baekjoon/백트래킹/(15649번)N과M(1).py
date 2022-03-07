@@ -1,4 +1,4 @@
-#수열
+#순열
 def permutation(n, m, words):
     if len(words) == m:
         print(" ".join(list(map(str, words))))
