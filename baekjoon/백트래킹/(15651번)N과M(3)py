@@ -1,0 +1,14 @@
+#중복순열
+def permutation_dup(n, m, words):
+    if len(words)==m:
+        print(" ".join(words))
+        return
+
+    for i in range(1, 1+n):
+        words.append(str(i))
+        permutation_dup(n,m,words)
+        words.pop()
+
+
+N, M = map(int, input().split())
+permutation_dup(N, M, [])
