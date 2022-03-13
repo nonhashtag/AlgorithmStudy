@@ -1,6 +1,6 @@
 import sys
 
-def brutal(arr):
+def greedy(arr):
     prev = 0
     cnt = 0
     for end, start in arr:
@@ -20,4 +20,4 @@ for i in range(N):
     start, end = map(int, sys.stdin.readline().split())
     meet.append((end, start))
 meet.sort()
-print(brutal(meet))
+print(greedy(meet))
