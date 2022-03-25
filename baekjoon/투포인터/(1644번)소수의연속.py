@@ -1,5 +1,8 @@
 import sys
 
+# 소수리스트 생성과정에서 시간초과 발생.
+# 에라토스 테네스 알고리즘을 참조할 것
+
 def isPrime(N):
     if N==1:
         return 0
