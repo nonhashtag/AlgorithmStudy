@@ -14,56 +14,40 @@ unsigned long long picking(vector <int> bags, vector <pair<int, int>> jewels, in
 	int idx = 0;
 	int valid = 0;
 	int b = 0;
+	int weight = 0;
+	int value = 0;
 	unsigned long long answer = 0;
+	
+	weight = jewels[idx].first;
+	value = jewels[idx].second;
 
-	for(int i=0; i<K; i++)
-	{
-		if (idx >= N)
-			break;
-		b = bags[0];
-		bags.erase(bags.begin());
-		if (b >= jewels[idx].first)
+	for(int b : bags)
+	{	
+		if (b < weight)
 		{
-			valid += 1;
-			while (idx < N)
+			if (!candidate.empty())
 			{
-				if (b < jewels[idx].first)
-					break;
-				candidate.push(jewels[idx].second);
-				idx += 1;
+				answer += candidate.top();
+				candidate.pop();
 			}
 		}
-		/*
-		반례
-		3 3
-		2 100
-		4 42
-		4 500
-		2
-		3
-		4
-		정답	: 600
-		오출력	: 642 
-		*/
-		else if (i > 0 && !candidate.empty())
+		else
 		{
-			answer += candidate.top();
-			candidate.pop();
+			while (b >= weight && idx<N)
+			{
+				candidate.push(value);
+				idx += 1;
+				if (idx >= N)
+					break;
+				weight = jewels[idx].first;
+				value = jewels[idx].second;
+			}
+			if (!candidate.empty())
+			{
+				answer += candidate.top();
+				candidate.pop();
+			}
 		}
-	}
-
-
-	for (int i = 0; i < valid; i++)
-	{
-		answer += candidate.top();
-		candidate.pop();
-	}
-	for (int i : bags)
-	{
-		if (candidate.empty())
-			break;
-		answer += candidate.top();
-		candidate.pop();
 	}
 
 	return answer;
@@ -77,8 +61,6 @@ int main()
 	vector <pair<int, int>> jewels;
 	vector <int> bags;
 	unsigned long long answer = 0;
-	
-
 
 	scanf("%d %d", &N, &K);
 	for (int i = 0; i < N; i++)
@@ -106,5 +88,4 @@ int main()
 	*/
 	printf("%llu", answer);
 	return 0;
-
 }
