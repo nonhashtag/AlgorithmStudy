@@ -12,7 +12,7 @@ int main()
 	int* dist; 
 
 	std::cin >> N >> D;
-	dist = (int*)malloc(sizeof(int) * (D+1));
+	dist = new int[D+1];
 	arr = new std::vector <std::pair<int,int>>[D+1]; // 동적할당이나 정적할당이나 메모리 호출량은 비슷하다..
 
 	for (int i = 0; i < N; i++)
@@ -36,7 +36,7 @@ int main()
 		}
 	}
 	std::cout << dist[D] << std::endl;
-	free(dist);
+	delete[] dist;
 	delete[] arr;
 
 	return 0;
