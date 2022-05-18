@@ -27,7 +27,7 @@ int main()
 	{
 		if (i != 0)
 		{
-			dist[i] = (dist[i] < dist[i - 1] + 1) ? dist[i] : dist[i - 1] + 1; // C6385 : 할당 메모리(10001) 이상으로 인덱싱 할 일 없으니, 고려 X
+			dist[i] = (dist[i] < dist[i - 1] + 1) ? dist[i] : dist[i - 1] + 1;
 		}
 		for (std::pair<int, int> road : arr[i])
 		{
