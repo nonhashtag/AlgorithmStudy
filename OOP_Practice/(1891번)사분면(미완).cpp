@@ -2,6 +2,16 @@
 #include <vector>
 #include <cmath>
 
+bool is_Odd(const int &to_move)
+{
+	return to_move % 2 == 1;
+}
+bool is_Positive(const int &to_move)
+{
+	return to_move >= 0;
+}
+
+
 class Plane
 {
 private:
@@ -12,10 +22,13 @@ private:
 
 public:
 	Plane();
-	std::vector <long long> getQuadrant();
+	std::vector <int> getQuadrant();
 	void move_X(int dimension, long long to_move);
-	void move_Y(int dimension);
+	void move_Y(int dimension, long long to_move);
+	bool is_Valid() const;
+	//int getAdditional();
 	void moveQuadrant();
+	void printOut() const;
 };
 
 Plane::Plane()
@@ -29,12 +42,21 @@ Plane::Plane()
 	for (int i = 0; i < this->dimension; i++)
 	{
 		long long index = std::pow(10, --dimension);
-		if(this->quadrant.empty())
+		if (this->quadrant.empty())
 			this->quadrant.push_back(quadrant / index);
 		else
 			this->quadrant.insert(this->quadrant.begin(), (quadrant / index));
 		quadrant = quadrant % index;
 	}
+}
+
+bool Plane::is_Valid() const
+{
+	long long limit = std::pow(2, dimension);
+	if (x_to_move >= limit || y_to_move >= limit)
+		return false;
+	if (is_Positive(y_to_move))
+
 }
 
 void Plane::move_X(int dimension, long long to_move)
@@ -51,45 +73,151 @@ void Plane::move_X(int dimension, long long to_move)
 				this->quadrant[dimension] = 2;
 			move_X(++dimension, (to_move / 2) + (to_move % 2));
 		}
+		else if (to_move < 0)
+		{
+			to_move = -to_move;
+			if (to_move % 2 == 1)
+				this->quadrant[dimension] = 2;
+			move_X(++dimension, -(to_move / 2));
+		}
 		break;
 	case 2:
 		if (to_move > 0)
 		{
 			if (to_move % 2 == 1)
 				this->quadrant[dimension] = 1;
-			move_X(++dimension, (to_move / 2) + (to_move % 2)); //////////////////////
+			move_X(++dimension, (to_move / 2));
+		}
+		else if (to_move < 0)
+		{
+			to_move = -to_move;
+			if (to_move % 2 == 1)
+				this->quadrant[dimension] = 1;
+			move_X(++dimension, -((to_move / 2)+(to_move%2)));
 		}
 		break;
 	case 3:
-
+		if (to_move > 0)
+		{
+			if (to_move % 2 == 1)
+				this->quadrant[dimension] = 4;
+			move_X(++dimension, (to_move / 2));
+		}
+		else if (to_move < 0)
+		{
+			to_move = -to_move;
+			if (to_move % 2 == 1)
+				this->quadrant[dimension] = 1;
+			move_X(++dimension, -((to_move / 2) + (to_move % 2)));
+		}
 		break;
 	case 4:
-
+		if (to_move > 0)
+		{
+			if (to_move % 2 == 1)
+				this->quadrant[dimension] = 3;
+			move_X(++dimension, (to_move / 2) + (to_move % 2));
+		}
+		else if (to_move < 0)
+		{
+			to_move = -to_move;
+			if (to_move % 2 == 1)
+				this->quadrant[dimension] = 3;
+			move_X(++dimension, -(to_move / 2));
+		}
 		break;
 	}
 
 	return;
 }
 
-void Plane::move_Y(int dimension)
+void Plane::move_Y(int dimension, long long to_move)
 {
+	if (this->dimension == dimension)
+		return;
+
 	switch (this->quadrant[dimension])
 	{
 	case 1:
-
+		if (to_move > 0)
+		{
+			if (to_move % 2 == 1)
+				this->quadrant[dimension] = 4;
+			move_Y(++dimension, (to_move / 2) + (to_move % 2));
+		}
+		else if (to_move < 0)
+		{
+			to_move = -to_move;
+			if (to_move % 2 == 1)
+				this->quadrant[dimension] = 4;
+			move_Y(++dimension, -(to_move / 2));
+		}
+		break;
 	case 2:
-
+		if (to_move > 0)
+		{
+			if (to_move % 2 == 1)
+				this->quadrant[dimension] = 3;
+			move_Y(++dimension, (to_move / 2) + (to_move % 2));
+		}
+		else if (to_move < 0)
+		{
+			to_move = -to_move;
+			if (to_move % 2 == 1)
+				this->quadrant[dimension] = 3;
+			move_Y(++dimension, -(to_move / 2));
+		}
+		break;
 	case 3:
-
+		if (to_move > 0)
+		{
+			if (to_move % 2 == 1)
+				this->quadrant[dimension] = 2;
+			move_Y(++dimension, (to_move / 2));
+		}
+		else if (to_move < 0)
+		{
+			to_move = -to_move;
+			if (to_move % 2 == 1)
+				this->quadrant[dimension] = 2;
+			move_Y(++dimension, -((to_move / 2) + (to_move % 2)));
+		}
+		break;
 	case 4:
+		if (to_move > 0)
+		{
+			if (to_move % 2 == 1)
+				this->quadrant[dimension] = 1;
+			move_Y(++dimension, (to_move / 2));
+		}
+		else if (to_move < 0)
+		{
+			to_move = -to_move;
+			if (to_move % 2 == 1)
+				this->quadrant[dimension] = 1;
+			move_Y(++dimension, -((to_move / 2) + (to_move % 2)));
+		}
+		break;
 	}
+
+	return;
 }
 
 void Plane::moveQuadrant()
 {
-		move_X();
-		move_Y();
+	move_X(0, this->x_to_move);
+	move_Y(0, this->y_to_move);
 	return;
+}
+
+void Plane::printOut() const
+{
+	auto reverse_quadrant = this->quadrant;
+	while (!reverse_quadrant.empty())
+	{
+		std::cout << reverse_quadrant.back();
+		reverse_quadrant.pop_back();
+	}
 }
 
 std::vector <long long> Plane::getQuadrant()
@@ -104,10 +232,8 @@ int main()
 {
 	Plane plane;
 
-	for (long long i : plane.getQuadrant())
-	{
-		std::cout << i << std::endl;
-	}
+	plane.moveQuadrant();
+	plane.printOut();
 
 	return 0;
 }
