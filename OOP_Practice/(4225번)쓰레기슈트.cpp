@@ -4,33 +4,23 @@
 #include <algorithm>
 
 
-
-enum RotatingDirection
-{
-	ClockWise = -1,
-	Stopped,
-	CounterClockWise
-};
-
 struct Point
 {
-	int x, y;
-	Point(int first, int second) : x(first), y(second) {};
+	double x, y;
+	Point(double first, double second) : x(first), y(second) {};
 };
 
-
 std::vector <Point> dots;
-
 
 int ccw(Point p1, Point p2, Point p3)
 {
 	int z = (p2.x - p1.x) * (p3.y - p1.y) - (p3.x - p1.x) * (p2.y - p1.y);
 	if (z < 0)
-		return ClockWise;
+		return -1;
 	else if (z == 0)
-		return Stopped;
+		return 0;
 	else
-		return CounterClockWise;
+		return 1;
 }
 
 int getDistance(Point p1, Point p2)
@@ -40,20 +30,18 @@ int getDistance(Point p1, Point p2)
 
 double dotLineDistance(Point p1, Point p2, Point p3)
 {
-	return abs((p1.y - p2.y) * p3.x - (p1.x - p2.x) * p3.y + p1.x * p2.y - p2.x * p1.y)
-		/ sqrt((p1.x - p2.x) * (p1.x - p2.x) + (p1.y - p2.y) * (p1.y - p2.y));
+	return abs((p2.x - p1.x)*(p1.y - p3.y) - (p1.x - p3.x)*(p2.y - p1.y)) / sqrt((p1.x - p2.x)*(p1.x - p2.x) + (p1.y - p2.y)*(p1.y - p2.y));
 }
 
 bool ccwCompare(Point p1, Point p2)
 {
 	auto zero = dots[0];
 	int z = ccw(zero, p1, p2);
-	if (z > 0)
-		return true;
-	if (z < 0)
-		return false;
+	if (z == 0)
+		return getDistance(zero, p1) < getDistance(zero, p2);
+	else
+		return z > 0;
 
-	return getDistance(zero, p1) < getDistance(zero, p2);
 }
 
 
@@ -65,23 +53,21 @@ private:
 
 public:
 	ConvexHull(std::vector<Point> inputs);
-	void setDots();
-	void setVerts();
-	std::vector<Point> getVerts();
-	std::vector<Point> graham();
-
+	void sortDots();
+	std::vector<Point> getVerts() const;
+	void operateGraham();
 };
 
 ConvexHull::ConvexHull(std::vector<Point> input)
 {
 	dots = input;
-	setDots();
-	setVerts();
+	sortDots();
+	operateGraham();
 }
 
-std::vector<Point> ConvexHull::graham()
+void ConvexHull::operateGraham()
 {
-	std::vector <Point> verts;
+	
 	for (int i = 0; i < dots.size(); i++)
 	{
 		while (2 <= verts.size() && ccw(verts[verts.size() - 2], verts[verts.size() - 1], dots[i]) <= 0)
@@ -89,10 +75,10 @@ std::vector<Point> ConvexHull::graham()
 
 		verts.push_back(dots[i]);
 	}
-	return verts;
+	return;
 }
 
-void ConvexHull::setDots()
+void ConvexHull::sortDots()
 {
 	int temp = 0;
 	for (int i = 1; i < dots.size(); i++)
@@ -100,35 +86,50 @@ void ConvexHull::setDots()
 			temp = i;
 	std::swap(dots[temp], dots[0]);
 	std::sort(dots.begin() + 1, dots.end(), ccwCompare);
-	return;
-}
 
-void ConvexHull::setVerts()
-{
-	verts = graham();
 	return;
 }
 
 
-std::vector<Point> ConvexHull::getVerts()
+
+std::vector<Point> ConvexHull::getVerts() const
 {
 	return verts;
 }
 
 
-
 class GarbageChute
 {
 private:
-
+	std::vector<Point> trash_shape;
 
 public:
-
+	GarbageChute(std::vector<Point> trash_shape);
+	double getMinimumWidth() const;
 
 };
 
+GarbageChute::GarbageChute(std::vector<Point> trash_shape)
+{
+	this->trash_shape = trash_shape;
+}
 
-
+double GarbageChute::getMinimumWidth() const
+{
+	int top = trash_shape.size();
+	double min_width = 1000000000;
+	for (int i = 0; i < top; i++)
+	{
+		double among_max = 0;
+		for (int j = 0; j < top; j++)
+		{
+			if (i == j || i + 1 == j) continue;
+			among_max = std::max(among_max, dotLineDistance(trash_shape[i], trash_shape[(i + 1) % top], trash_shape[j]));
+		}
+		min_width = std::min(min_width, among_max);
+	}
+	return min_width;
+}
 
 
 int main()
@@ -136,41 +137,34 @@ int main()
 	std::cout << std::fixed;
 	std::cout.precision(2);
 	int num_of_dots = 0;
-	int x=0, y=0;
-	int top = 0; ///////////////
+	double x = 0, y = 0;
 	int test_case = 0;
+
 	std::vector <Point> dots;
 	std::cin >> num_of_dots;
 
-	while(num_of_dots)
+	while (num_of_dots)
 	{
 		for (int i = 0; i < num_of_dots; i++)
 		{
 			std::cin >> x >> y;
 			dots.push_back(Point(x, y));
 		}
-		ConvexHull shape(dots);
+		auto shape = ConvexHull(dots).getVerts();
 
-		/*for (auto i : shape.getVerts())
+		/*for (auto i : shape)
 			std::cout << i.x << " " << i.y << "\n";*/
 
-		auto stk = shape.getVerts();
-		double res = 100000000;
-		top = stk.size();
+		auto garbage_chute = GarbageChute(shape);
+		double min_width = garbage_chute.getMinimumWidth();
 
-		/////////
-		for (int i = 0, j = 1; i < top; i++) {
-			double l = dotLineDistance(stk[i], stk[(i + 1) % top], stk[j]);
-			while (l < dotLineDistance(stk[i], stk[(i + 1) % top], stk[(j + 1) % top])) {
-				j = (j + 1) % top;
-				l = dotLineDistance(stk[i], stk[(i + 1) % top], stk[j]);
-			}
-			res = std::min(res, l);
-		}
-		
-		std::cout << "Case " << ++test_case << ": " << res + 0.004999999 << "\n";
 
+		if (min_width == 0)
+			std::cout << "Case " << ++test_case << ": " << min_width << "\n";
+		else
+			std::cout << "Case " << ++test_case << ": " << ceil(min_width*100)/100 << "\n";
 		std::cin >> num_of_dots;
+		dots.clear();
 	}
 	return 0;
 }
