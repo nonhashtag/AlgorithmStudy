@@ -4,6 +4,7 @@
 #include <algorithm>
 
 
+
 enum RotatingDirection
 {
 	ClockWise = -1,
